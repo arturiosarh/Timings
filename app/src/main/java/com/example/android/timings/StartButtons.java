@@ -137,7 +137,7 @@ public class StartButtons extends ViewModel {
             linearLayout.addView(linearLayout9);
 
             myTargetView = new MyTargetView(context);
-            myTargetView.setSlotId(1563231);
+            myTargetView.setSlotId(1235508);
             LinearLayout.LayoutParams myTargetViewParams = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             myTargetView.setLayoutParams(myTargetViewParams);
