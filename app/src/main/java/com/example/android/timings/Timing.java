@@ -185,7 +185,7 @@ public class Timing extends Activity {
                     (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             textView1_1_1_1.setLayoutParams(textView1_1_1_1Params);
             textView1_1_1_1Params.gravity = BOTTOM;
-            textView1_1_1_1.setText("" + days);
+            textView1_1_1_1.setText("0");
             textView1_1_1_1.setTextSize(40);
             textView1_1_1_1.setId(idTextView1_1_1_1);
             linearLayout1_1_02.addView(textView1_1_1_1);
