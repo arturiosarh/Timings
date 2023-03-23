@@ -136,6 +136,12 @@ public class StartButtons extends ViewModel {
 
             linearLayout.addView(linearLayout9);
 
+            LinearLayout linearLayout10 = new LinearLayout(context);
+            LinearLayout.LayoutParams linearLayout10Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            linearLayout10.setLayoutParams(linearLayout10Params);
+            linearLayout10.setOrientation(LinearLayout.HORIZONTAL);
+
             myTargetView = new MyTargetView(context);
             myTargetView.setSlotId(1563231);
             LinearLayout.LayoutParams myTargetViewParams = new LinearLayout.LayoutParams
@@ -144,7 +150,7 @@ public class StartButtons extends ViewModel {
             myTargetView.setListener(new MyTargetView.MyTargetViewListener() {
                 @Override
                 public void onLoad(@NonNull MyTargetView myTargetView) {
-                    linearLayout.addView(myTargetView);
+                    linearLayout10.addView(myTargetView);
                 }
 
                 @Override
@@ -164,6 +170,7 @@ public class StartButtons extends ViewModel {
             });
             myTargetView.load();
 
+            linearLayout.addView(linearLayout10);
 
             for (int i = 0; i < altNumber; i++) {
                 linearLayout.addView(arrayListTiming[i].newTiming());
