@@ -65,6 +65,7 @@ public class StartButtons extends ViewModel {
             button9.setLayoutParams(button9Params);
             button9.setText("+");
             button9.setTextSize(20);
+
             button9.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
