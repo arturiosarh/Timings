@@ -239,6 +239,8 @@ public class Timing extends Activity {
             editText1_1_3.setCursorVisible(false);
             editText1_1_3.setEms(7);
             editText1_1_3.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            editText1_1_3.setFadingEdgeLength(9);
+            editText1_1_3.setLines(1);
             editText1_1_3.setMaxLines(1);
             editText1_1_3.setText(nameOfTiming);
             editText1_1_3.setId(idEditText1_1_3);
