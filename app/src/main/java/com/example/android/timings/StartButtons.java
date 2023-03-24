@@ -1,5 +1,7 @@
 package com.example.android.timings;
 
+import static android.view.Gravity.BOTTOM;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -30,6 +32,7 @@ public class StartButtons extends ViewModel {
     private LinearLayout linearLayout;
     private ScrollView scrollView;
     private MyTargetView myTargetView;
+    private MyTargetView myTargetView0;
 
     private int altNumber;
     private final String altNumberKey = "altNumber";
@@ -147,6 +150,7 @@ public class StartButtons extends ViewModel {
             myTargetView.setSlotId(1235508);
             LinearLayout.LayoutParams myTargetViewParams = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            myTargetViewParams.gravity = BOTTOM;
             myTargetView.setLayoutParams(myTargetViewParams);
             myTargetView.setListener(new MyTargetView.MyTargetViewListener() {
                 @Override
@@ -170,6 +174,35 @@ public class StartButtons extends ViewModel {
                 }
             });
             myTargetView.load();
+
+            myTargetView0 = new MyTargetView(context);
+            myTargetView0.setSlotId(1237382);
+            LinearLayout.LayoutParams myTargetView0Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            myTargetView0Params.gravity = BOTTOM;
+            myTargetView0.setLayoutParams(myTargetViewParams);
+            myTargetView0.setListener(new MyTargetView.MyTargetViewListener() {
+                @Override
+                public void onLoad(@NonNull MyTargetView myTargetView) {
+                    linearLayout.addView(myTargetView0);
+                }
+
+                @Override
+                public void onNoAd(@NonNull String s, @NonNull MyTargetView myTargetView) {
+
+                }
+
+                @Override
+                public void onShow(@NonNull MyTargetView myTargetView) {
+
+                }
+
+                @Override
+                public void onClick(@NonNull MyTargetView myTargetView) {
+
+                }
+            });
+            myTargetView0.load();
 
             linearLayout.addView(linearLayout10);
 
