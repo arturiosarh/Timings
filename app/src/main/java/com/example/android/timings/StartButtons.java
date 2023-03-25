@@ -2,6 +2,7 @@ package com.example.android.timings;
 
 import static android.view.Gravity.BOTTOM;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,7 +20,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.RecyclerView;
+import android.Manifest;
 
 import com.my.target.ads.MyTargetView;
 
@@ -40,9 +41,11 @@ public class StartButtons extends ViewModel {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private Context context;
+    private Activity activity;
 
-    public StartButtons(Context context, SharedPreferences sharedPreferences){
+    public StartButtons(Context context, Activity activity, SharedPreferences sharedPreferences){
         this.context = context;
+        this.activity = activity;
         this.sharedPreferences = sharedPreferences;
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -75,12 +78,12 @@ public class StartButtons extends ViewModel {
                 @Override
                 public void onClick(View v) {   //добавить таймер
                     try {
-                        /*int permissionStatus = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS);
+                        int permission1Status = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS);
 
-                        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.POST_NOTIFICATIONS},
-                                    REQUEST_CODE_PERMISSION_POST_NOTIFICATIONS);
-                        }*/
+                        if (permission1Status != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.POST_NOTIFICATIONS},22);
+                        }
+
                         if (altNumber < arrayListTiming.length) {
                             linearLayout.addView(arrayListTiming[altNumber].newTiming());
                             altNumber++;

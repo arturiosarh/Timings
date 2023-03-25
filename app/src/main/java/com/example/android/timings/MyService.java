@@ -11,8 +11,6 @@ public class MyService extends Service {
 
     private Context context = this;
     private static final int NOTIFY_ID = 1;
-    private static final String CHANNEL_ID = "my_channel_0";
-    private int laps = 0;
     private String nameOfTiming = "Timings";
 
 
@@ -35,8 +33,8 @@ public class MyService extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void runAsForeground(){
-        new NotifChanel(context,CHANNEL_ID).activation();
-        startForeground(NOTIFY_ID, new NotifChanel(context,CHANNEL_ID).startNotif(nameOfTiming,laps));
+        new NotifChanel(context).activationForegroundChannel();
+        startForeground(NOTIFY_ID, new NotifChanel(context).startNotif(nameOfTiming));
     }
 
     @Override

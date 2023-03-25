@@ -433,7 +433,7 @@ public class Timing extends Activity {
                                         .format(laps));
                                 nm = (NotificationManager) context.
                                         getSystemService(MyService.NOTIFICATION_SERVICE);
-                                nm.notify(NOTIFY_ID, notifChanel.getNotif(nameOfTiming, laps, nowTimeBeginFull));
+                                nm.notify(NOTIFY_ID, notifChanel.getNotif(nameOfTiming, laps, nowTimeBegin));
                             }
                         }
                     }, 1000);

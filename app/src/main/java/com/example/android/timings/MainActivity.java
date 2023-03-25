@@ -1,5 +1,6 @@
 package com.example.android.timings;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private NotifChanel[] notifChanels;
     private MyTargetView myTargetView1;
     private MyTargetView myTargetView2;
+    private Activity activity;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            setContentView(new StartButtons(context, sharedPreferences)
+            setContentView(new StartButtons(context, activity, sharedPreferences)
                     .startTiming(((App) getApplication()).getTimings(), myTargetView1, myTargetView2));       // заполнение массива таймингов
         } catch (Exception exception) {
             Toast.makeText(context, exception.toString(),
@@ -154,8 +156,10 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         notifChanels = new NotifChanel[numberOfTimings];
+        activity = this;
+        new NotifChanel(context).activation();
         for (int i = 0; i < numberOfTimings; i ++) {
-            notifChanels[i] = new NotifChanel(context, "my_channel_0");
+            notifChanels[i] = new NotifChanel(context);
         }
         if (((App) getApplication()).getTimings() == null) {
             ((App) getApplication()).setTimings(new Timing[numberOfTimings]);
