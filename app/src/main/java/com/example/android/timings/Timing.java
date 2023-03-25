@@ -346,9 +346,6 @@ public class Timing extends Activity {
                     myTimer.cancel();
                 }
                 nameOfTiming = editText1_1_3.getText().toString();
-                Toast.makeText(context, nameOfTiming + ": установлен на " + hours + " ч. и " + minutes + " м." +
-                                " в " + nowTimeBeginFull,
-                        Toast.LENGTH_SHORT).show();
                 if (hours > 0) {
                     days = hours / 24;
                 } else {
@@ -370,8 +367,13 @@ public class Timing extends Activity {
                     daysInTimer--;
                 }
                 if (hours > 0 || minutes > 0) {
-                    Intent intent = new Intent(context, MyReceiver.class);
-                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                    Toast.makeText(context, nameOfTiming + ": установлен на " + hours + " ч. и " + minutes + " м." +
+                                    " в " + nowTimeBeginFull,
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MyService.class);
+                    context.startService(intent);  // запускаем фоновый сервис с уведомлением
+                    Intent intent01 = new Intent(context, MyReceiver.class);
+                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent01, PendingIntent.FLAG_IMMUTABLE);
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, duration01.toMillis(), duration01.toMillis(), pendingIntent);
                     laps = 0;

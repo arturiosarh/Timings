@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.my.target.ads.MyTargetView;
+
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private TimingArray timingArray;
     private NotifChanel[] notifChanels;
+    private MyTargetView myTargetView1;
+    private MyTargetView myTargetView2;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -30,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         try {
             init(); // обьявление контекста
-            startService(new Intent(context, MyService.class));  // запускаем фоновый сервис с уведомлением
 
         } catch (Exception exception) {
             Toast.makeText(context, exception.toString(),
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         try {
             setContentView(new StartButtons(context, sharedPreferences)
-                    .startTiming(((App) getApplication()).getTimings()));       // заполнение массива таймингов
+                    .startTiming(((App) getApplication()).getTimings(), myTargetView1, myTargetView2));       // заполнение массива таймингов
         } catch (Exception exception) {
             Toast.makeText(context, exception.toString(),
                     Toast.LENGTH_SHORT).show();
@@ -76,6 +79,15 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
+        int count = 0;
+        for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
+            if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
+                count++;
+            }
+        }
+        if (count == 50) {
+            context.stopService(new Intent(context,MyService.class));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -96,6 +108,15 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
+        int count = 0;
+        for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
+            if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
+                count++;
+            }
+        }
+        if (count == 50) {
+            context.stopService(new Intent(context,MyService.class));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -115,6 +136,15 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBegin" + i, ((App) getApplication()).getTimings()[i].getNowTimeBegin());
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
+        }
+        int count = 0;
+        for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
+            if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
+                count++;
+            }
+        }
+        if (count == 50) {
+            context.stopService(new Intent(context,MyService.class));
         }
     }
 

@@ -4,6 +4,7 @@ import static android.view.Gravity.BOTTOM;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,8 +34,6 @@ public class StartButtons extends ViewModel {
     private TextView textView9_2;
     private LinearLayout linearLayout;
     private ScrollView scrollView;
-    private MyTargetView myTargetView;
-    private MyTargetView myTargetView0;
 
     private int altNumber;
     private final String altNumberKey = "altNumber";
@@ -45,7 +46,7 @@ public class StartButtons extends ViewModel {
         this.sharedPreferences = sharedPreferences;
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ScrollView startTiming(Timing[] arrayListTiming) {  //главный экран
+    public ScrollView startTiming(Timing[] arrayListTiming, MyTargetView myTargetView, MyTargetView myTargetView0) {  //главный экран
         try {
             editor = sharedPreferences.edit();
             altNumber = sharedPreferences.getInt(altNumberKey, 0);
@@ -74,6 +75,12 @@ public class StartButtons extends ViewModel {
                 @Override
                 public void onClick(View v) {   //добавить таймер
                     try {
+                        /*int permissionStatus = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS);
+
+                        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.POST_NOTIFICATIONS},
+                                    REQUEST_CODE_PERMISSION_POST_NOTIFICATIONS);
+                        }*/
                         if (altNumber < arrayListTiming.length) {
                             linearLayout.addView(arrayListTiming[altNumber].newTiming());
                             altNumber++;
@@ -173,7 +180,9 @@ public class StartButtons extends ViewModel {
 
                 }
             });
+
             myTargetView.load();
+
 
             myTargetView0 = new MyTargetView(context);
             myTargetView0.setSlotId(1237382);
@@ -184,7 +193,7 @@ public class StartButtons extends ViewModel {
             myTargetView0.setListener(new MyTargetView.MyTargetViewListener() {
                 @Override
                 public void onLoad(@NonNull MyTargetView myTargetView) {
-                    linearLayout.addView(myTargetView0);
+                    linearLayout.addView(myTargetView);
                 }
 
                 @Override

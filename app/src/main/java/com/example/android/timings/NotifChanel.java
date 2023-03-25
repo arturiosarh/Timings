@@ -74,6 +74,7 @@ public class NotifChanel extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public Notification startNotif(String nameOfTiming, int laps) {
+
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, notificationIntent,

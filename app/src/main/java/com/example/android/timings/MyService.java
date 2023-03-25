@@ -14,7 +14,6 @@ public class MyService extends Service {
     private static final String CHANNEL_ID = "my_channel_0";
     private int laps = 0;
     private String nameOfTiming = "Timings";
-    private boolean runForeground = false;
 
 
     @Override
@@ -25,9 +24,7 @@ public class MyService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!runForeground) {
-            runAsForeground();
-        }
+        runAsForeground();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -38,7 +35,6 @@ public class MyService extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void runAsForeground(){
-        runForeground = true;
         new NotifChanel(context,CHANNEL_ID).activation();
         startForeground(NOTIFY_ID, new NotifChanel(context,CHANNEL_ID).startNotif(nameOfTiming,laps));
     }
