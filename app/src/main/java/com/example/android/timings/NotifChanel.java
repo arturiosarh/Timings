@@ -84,7 +84,7 @@ public class NotifChanel extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notification = new Notification.Builder(context)
                     .setContentTitle(nameOfTiming)
-                    .setContentText("Активно в фоновом режиме.")
+                    .setContentText("Работа в фоновом режиме.")
                     .setSmallIcon(R.drawable.timer)
                     .setChannelId(CHANNEL_ID)
                     .setContentIntent(pendingIntent)
