@@ -84,6 +84,12 @@ public class StartButtons extends ViewModel {
                             ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.POST_NOTIFICATIONS},22);
                         }
 
+                        int permission2Status = ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_BOOT_COMPLETED);
+
+                        if (permission2Status != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.RECEIVE_BOOT_COMPLETED},23);
+                        }
+
                         if (altNumber < arrayListTiming.length) {
                             linearLayout.addView(arrayListTiming[altNumber].newTiming());
                             altNumber++;
