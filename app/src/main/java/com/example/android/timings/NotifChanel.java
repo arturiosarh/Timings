@@ -1,5 +1,7 @@
 package com.example.android.timings;
 
+import static android.media.RingtoneManager.*;
+
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -71,7 +74,8 @@ public class NotifChanel extends Activity {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         String nowTimeTxt = nowTime.format(dtf);
 
-        Notification notification = new Notification.Builder(context)
+        Notification notification = new Notification
+                .Builder(context)
                 .setContentTitle(nameOfTiming)
                 .setContentText("На тайминге " + nameOfTiming + " время закончилось " + laps + " раз(а) с "+ startTime + " до " + nowTimeTxt +" !")
                 .setSmallIcon(R.drawable.timer)
@@ -79,11 +83,10 @@ public class NotifChanel extends Activity {
                 .setChannelId("my_channel")
                 .setOngoing(false)
                 .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setSound(RingtoneManager.getDefaultUri(TYPE_ALARM))
                 .build();
         notification.flags = notification.flags | Notification.FLAG_INSISTENT;
-        Uri ringUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        notification.sound = ringUri;
         return notification;
     }
 
@@ -93,7 +96,7 @@ public class NotifChanel extends Activity {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, notificationIntent,
-                        PendingIntent.FLAG_MUTABLE);
+                        PendingIntent.FLAG_IMMUTABLE);
 
         Notification notification = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
