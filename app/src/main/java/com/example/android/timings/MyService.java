@@ -1,27 +1,32 @@
 package com.example.android.timings;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
-import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class MyService extends Service {
+public class MyService extends IntentService {
 
     private Context context = this;
     private static final int NOTIFY_ID = 1;
     private static final String CHANNEL_ID = "my_channel_0";
     private int laps = 0;
     private String nameOfTiming = "Тайминги включены";
+
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     *
+     * @param name Used to name the worker thread, important only for debugging.
+     */
+    public MyService(String name) {
+        super(name);
+    }
 
 
     @Override
@@ -51,5 +56,10 @@ public class MyService extends Service {
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+
     }
 }
