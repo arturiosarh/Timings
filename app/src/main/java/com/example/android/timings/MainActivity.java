@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
-        int count = 0;
+        /*int count = 0;
         for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
             if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
                 count++;
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
-        }
+        }*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
-        int count = 0;
+        /*int count = 0;
         for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
             if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
                 count++;
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
-        }
+        }*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
-        int count = 0;
+        /*int count = 0;
         for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
             if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
                 count++;
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
-        }
+        }*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
