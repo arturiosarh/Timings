@@ -1,7 +1,11 @@
 package com.example.android.timings;
 
+import static android.view.Gravity.BOTTOM;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -13,8 +17,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.RecyclerView;
+import android.Manifest;
 
 import com.my.target.ads.MyTargetView;
 
@@ -29,20 +35,21 @@ public class StartButtons extends ViewModel {
     private TextView textView9_2;
     private LinearLayout linearLayout;
     private ScrollView scrollView;
-    private MyTargetView myTargetView;
 
     private int altNumber;
     private final String altNumberKey = "altNumber";
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private Context context;
+    private Activity activity;
 
-    public StartButtons(Context context, SharedPreferences sharedPreferences){
+    public StartButtons(Context context, Activity activity, SharedPreferences sharedPreferences){
         this.context = context;
+        this.activity = activity;
         this.sharedPreferences = sharedPreferences;
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ScrollView startTiming(Timing[] arrayListTiming) {  //главный экран
+    public ScrollView startTiming(Timing[] arrayListTiming, MyTargetView myTargetView, MyTargetView myTargetView0) {  //главный экран
         try {
             editor = sharedPreferences.edit();
             altNumber = sharedPreferences.getInt(altNumberKey, 0);
@@ -65,11 +72,18 @@ public class StartButtons extends ViewModel {
             button9.setLayoutParams(button9Params);
             button9.setText("+");
             button9.setTextSize(20);
+
             button9.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onClick(View v) {   //добавить таймер
                     try {
+                        int permission1Status = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS);
+
+                        if (permission1Status != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.POST_NOTIFICATIONS},22);
+                        }
+
                         if (altNumber < arrayListTiming.length) {
                             linearLayout.addView(arrayListTiming[altNumber].newTiming());
                             altNumber++;
@@ -146,6 +160,7 @@ public class StartButtons extends ViewModel {
             myTargetView.setSlotId(1235508);
             LinearLayout.LayoutParams myTargetViewParams = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            myTargetViewParams.gravity = BOTTOM;
             myTargetView.setLayoutParams(myTargetViewParams);
             myTargetView.setListener(new MyTargetView.MyTargetViewListener() {
                 @Override
@@ -168,7 +183,38 @@ public class StartButtons extends ViewModel {
 
                 }
             });
+
             myTargetView.load();
+
+
+            myTargetView0 = new MyTargetView(context);
+            myTargetView0.setSlotId(1237382);
+            LinearLayout.LayoutParams myTargetView0Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            myTargetView0Params.gravity = BOTTOM;
+            myTargetView0.setLayoutParams(myTargetViewParams);
+            myTargetView0.setListener(new MyTargetView.MyTargetViewListener() {
+                @Override
+                public void onLoad(@NonNull MyTargetView myTargetView) {
+                    linearLayout.addView(myTargetView);
+                }
+
+                @Override
+                public void onNoAd(@NonNull String s, @NonNull MyTargetView myTargetView) {
+
+                }
+
+                @Override
+                public void onShow(@NonNull MyTargetView myTargetView) {
+
+                }
+
+                @Override
+                public void onClick(@NonNull MyTargetView myTargetView) {
+
+                }
+            });
+            myTargetView0.load();
 
             linearLayout.addView(linearLayout10);
 

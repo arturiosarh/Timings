@@ -1,8 +1,11 @@
 package com.example.android.timings;
 
+import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,10 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.my.target.ads.MyTargetView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private TimingArray timingArray;
     private NotifChanel[] notifChanels;
+    private MyTargetView myTargetView1;
+    private MyTargetView myTargetView2;
+    private Activity activity;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -26,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         try {
             init(); // обьявление контекста
-            startService(new Intent(context, MyService.class));  // запускаем фоновый сервис с уведомлением
 
         } catch (Exception exception) {
             Toast.makeText(context, exception.toString(),
@@ -45,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            setContentView(new StartButtons(context, sharedPreferences)
-                    .startTiming(((App) getApplication()).getTimings()));       // заполнение массива таймингов
+            setContentView(new StartButtons(context, activity, sharedPreferences)
+                    .startTiming(((App) getApplication()).getTimings(), myTargetView1, myTargetView2));       // заполнение массива таймингов
         } catch (Exception exception) {
             Toast.makeText(context, exception.toString(),
                     Toast.LENGTH_SHORT).show();
@@ -72,6 +81,15 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
+        int count = 0;
+        for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
+            if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
+                count++;
+            }
+        }
+        if (count == 50) {
+            context.stopService(new Intent(context,MyService.class));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -91,6 +109,15 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBegin" + i, ((App) getApplication()).getTimings()[i].getNowTimeBegin());
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
+        }
+        int count = 0;
+        for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
+            if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
+                count++;
+            }
+        }
+        if (count == 50) {
+            context.stopService(new Intent(context,MyService.class));
         }
     }
 
@@ -112,6 +139,15 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
+        int count = 0;
+        for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
+            if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
+                count++;
+            }
+        }
+        if (count == 50) {
+            context.stopService(new Intent(context,MyService.class));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -120,8 +156,10 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         notifChanels = new NotifChanel[numberOfTimings];
+        activity = this;
+        new NotifChanel(context).activation();
         for (int i = 0; i < numberOfTimings; i ++) {
-            notifChanels[i] = new NotifChanel(context, "my_channel_0");
+            notifChanels[i] = new NotifChanel(context);
         }
         if (((App) getApplication()).getTimings() == null) {
             ((App) getApplication()).setTimings(new Timing[numberOfTimings]);

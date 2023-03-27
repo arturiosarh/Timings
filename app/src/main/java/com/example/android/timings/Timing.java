@@ -9,8 +9,11 @@ import static android.view.Gravity.START;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -45,6 +48,7 @@ public class Timing extends Activity {
     private int days;
     private int daysInTimer;
     private int laps;
+    private int count;
 
     private Timer myTimer;
     //private Timer newTimer;
@@ -56,6 +60,8 @@ public class Timing extends Activity {
     private String nowTimeBeginFull;
 
     private Timer buttonRunner;
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
 
     private final Context context;
     private LinearLayout linearLayout1;
@@ -74,11 +80,26 @@ public class Timing extends Activity {
     private TextView textView1_1_1_01;
 
     public Timing(Context context,
-                  String nameOfTiming, int minutes, int beginMinutes, int hours, int beginHours,
-                  int days, int daysInTimer, int laps, String time, String nowTimeBegin,
-                  String nowTimeBeginFull, int NOTIFY_ID, int idTextView1_1_1_1,
-                  int idTextView1_1_2, int idButton1_5_1, int idButton1_5_2, int idEditText1_1_3,
-                  int idTextView1_1_1_01, NotifChanel notifChanel) {
+                  String nameOfTiming,
+                  int minutes,
+                  int beginMinutes,
+                  int hours,
+                  int beginHours,
+                  int days,
+                  int daysInTimer,
+                  int laps,
+                  int count,
+                  String time,
+                  String nowTimeBegin,
+                  String nowTimeBeginFull,
+                  int NOTIFY_ID,
+                  int idTextView1_1_1_1,
+                  int idTextView1_1_2,
+                  int idButton1_5_1,
+                  int idButton1_5_2,
+                  int idEditText1_1_3,
+                  int idTextView1_1_1_01,
+                  NotifChanel notifChanel) {
         this.context = context;
         this.nameOfTiming = nameOfTiming;
         this.minutes = minutes;
@@ -88,6 +109,7 @@ public class Timing extends Activity {
         this.days = days;
         this.daysInTimer = daysInTimer;
         this.laps = laps;
+        this.count = count;
         this.time = time;
         this.nowTimeBegin = nowTimeBegin;
         this.nowTimeBeginFull = nowTimeBeginFull;
@@ -108,7 +130,7 @@ public class Timing extends Activity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n", "UnspecifiedImmutableFlag"})
     public LinearLayout newTiming() {
         try {
 
@@ -217,6 +239,8 @@ public class Timing extends Activity {
             editText1_1_3.setCursorVisible(false);
             editText1_1_3.setEms(7);
             editText1_1_3.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            editText1_1_3.setFadingEdgeLength(9);
+            editText1_1_3.setLines(1);
             editText1_1_3.setMaxLines(1);
             editText1_1_3.setText(nameOfTiming);
             editText1_1_3.setId(idEditText1_1_3);
@@ -322,9 +346,6 @@ public class Timing extends Activity {
                     myTimer.cancel();
                 }
                 nameOfTiming = editText1_1_3.getText().toString();
-                Toast.makeText(context, nameOfTiming + ": установлен на " + hours + " ч. и " + minutes + " м." +
-                                " в " + nowTimeBeginFull,
-                        Toast.LENGTH_SHORT).show();
                 if (hours > 0) {
                     days = hours / 24;
                 } else {
@@ -338,11 +359,23 @@ public class Timing extends Activity {
                 beginMinutes = minutes;
                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                 daysInTimer = days;
+                LocalDateTime localDateTime;
+                localDateTime = timeOfBegin.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
+                Duration duration01 = Duration.between(timeOfBegin, localDateTime);
                 int beginDays = days;
                 if (days > 0 && timer.equals(LocalTime.of(0, 0, 0))) {
                     daysInTimer--;
                 }
                 if (hours > 0 || minutes > 0) {
+                    Toast.makeText(context, nameOfTiming + ": установлен на " + hours + " ч. и " + minutes + " м." +
+                                    " в " + nowTimeBeginFull,
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MyService.class);
+                    context.startService(intent);  // запускаем фоновый сервис с уведомлением
+                    Intent intent01 = new Intent(context, MyReceiver.class);
+                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent01, PendingIntent.FLAG_IMMUTABLE);
+                    alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, duration01.toMillis(), duration01.toMillis(), pendingIntent);
                     laps = 0;
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance()
                             .format(laps));
@@ -400,7 +433,7 @@ public class Timing extends Activity {
                                         .format(laps));
                                 nm = (NotificationManager) context.
                                         getSystemService(MyService.NOTIFICATION_SERVICE);
-                                nm.notify(NOTIFY_ID, notifChanel.getNotif(nameOfTiming, laps, nowTimeBeginFull));
+                                nm.notify(NOTIFY_ID, notifChanel.getNotif(nameOfTiming, laps, nowTimeBegin));
                             }
                         }
                     }, 1000);
@@ -427,6 +460,7 @@ public class Timing extends Activity {
                         Toast.LENGTH_SHORT).show();
                 if (myTimer != null) {
                     myTimer.cancel();
+                    alarmManager.cancel(pendingIntent);
                     timer = LocalTime.of(0, 0, 0);
                     time = dtf.format(timer);
                     laps = 0;

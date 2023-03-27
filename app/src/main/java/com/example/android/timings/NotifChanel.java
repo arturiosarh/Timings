@@ -20,12 +20,10 @@ import java.time.format.DateTimeFormatter;
 public class NotifChanel extends Activity {
 
     private Context context;
-    private String CHANNEL_ID;
     private LocalDateTime nowTime;
 
-    public NotifChanel(Context context, String CHANNEL_ID) {
+    public NotifChanel(Context context) {
         this.context = context;
-        this.CHANNEL_ID = CHANNEL_ID;
     }
 
 
@@ -34,9 +32,26 @@ public class NotifChanel extends Activity {
         NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence name = "Уведомления тайминогов";
         String description = "my_channel";
-        int importance = NotificationManager.IMPORTANCE_MAX;
+        int importance = NotificationManager.IMPORTANCE_HIGH;
 
-        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+        NotificationChannel mChannel = new NotificationChannel("my_channel", name, importance);
+        mChannel.setName(name);
+        mChannel.setDescription(description);
+        mChannel.enableLights(true);
+        mChannel.setLightColor(Color.RED);
+        mChannel.enableVibration(true);
+        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        mNotificationManager.createNotificationChannel(mChannel);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void activationForegroundChannel() {
+        NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        CharSequence name = "Фоновое оповещение";
+        String description = "foreground_channel";
+        int importance = NotificationManager.IMPORTANCE_MIN;
+
+        NotificationChannel mChannel = new NotificationChannel("foreground_channel", name, importance);
         mChannel.setName(name);
         mChannel.setDescription(description);
         mChannel.enableLights(true);
@@ -61,7 +76,7 @@ public class NotifChanel extends Activity {
                 .setContentText("На тайминге " + nameOfTiming + " время закончилось " + laps + " раз(а) с "+ startTime + " до " + nowTimeTxt +" !")
                 .setSmallIcon(R.drawable.timer)
                 .setContentIntent(pendingIntent)
-                .setChannelId(CHANNEL_ID)
+                .setChannelId("my_channel")
                 .setOngoing(false)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
@@ -73,19 +88,20 @@ public class NotifChanel extends Activity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public Notification startNotif(String nameOfTiming, int laps) {
+    public Notification startNotif(String nameOfTiming) {
+
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, notificationIntent,
-                        PendingIntent.FLAG_IMMUTABLE);
+                        PendingIntent.FLAG_MUTABLE);
 
         Notification notification = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notification = new Notification.Builder(context)
                     .setContentTitle(nameOfTiming)
-                    .setContentText("Не убирайте это сообщение, для постоянной работы таймингов.")
+                    .setContentText("Работа в фоновом режиме.")
                     .setSmallIcon(R.drawable.timer)
-                    .setChannelId(CHANNEL_ID)
+                    .setChannelId("foreground_channel")
                     .setContentIntent(pendingIntent)
                     .setOngoing(false)
                     .setAutoCancel(true)

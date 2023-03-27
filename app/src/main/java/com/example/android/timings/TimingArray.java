@@ -39,6 +39,7 @@ public class TimingArray extends Activity {
                     sharedPreferences.getInt("day" + i, 0),
                     sharedPreferences.getInt("daysInTimer" + i, 0),
                     sharedPreferences.getInt("laps" + i, 0),
+                    i,
                     sharedPreferences.getString("timerString" + i, dtf.format(LocalTime.of(0, 0, 0))),
                     sharedPreferences.getString("nowTimeBegin" + i, dtf.format(LocalTime.now())),
                     sharedPreferences.getString("nowTimeBeginFull" + i, dtff.format(LocalDateTime.now())),
