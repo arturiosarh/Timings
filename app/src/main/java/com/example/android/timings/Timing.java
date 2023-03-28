@@ -376,7 +376,7 @@ public class Timing extends Activity {
                     context.startService(intent);  // запускаем фоновый сервис с уведомлением
 
                     Intent intent01 = new Intent(context, MyReceiver.class);
-                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent01, PendingIntent.FLAG_IMMUTABLE);
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, duration01.toMillis(), pendingIntent);
 
