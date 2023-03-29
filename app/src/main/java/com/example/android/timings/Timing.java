@@ -364,8 +364,10 @@ public class Timing extends Activity {
 
                 LocalDateTime localDateTime;
                 localDateTime = timeOfBegin.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
-                Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
-                //Duration duration01 = Duration.between(timeOfBegin, localDateTime);
+                LocalDateTime localDateTime1 = timeOfBegin.plusSeconds(30);
+                //Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+                Duration duration01 = Duration.between(timeOfBegin, localDateTime); //промежуток времени
+                Duration duration02 = Duration.between(timeOfBegin, localDateTime1); //ожидание намерения
 
                 int beginDays = days;
                 if (days > 0 && timer.equals(LocalTime.of(0, 0, 0))) {
@@ -381,7 +383,7 @@ public class Timing extends Activity {
                     Intent intent01 = new Intent(context, MyReceiver.class);
                     pendingIntent = PendingIntent.getBroadcast(context, 135, intent01, PendingIntent.FLAG_IMMUTABLE);
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, instant.toEpochMilli(), instant.toEpochMilli(), pendingIntent);
+                    alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, duration02.toMillis(), duration01.toMillis(), pendingIntent);
 
                     laps = 0;
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
