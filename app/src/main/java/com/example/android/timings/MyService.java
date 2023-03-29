@@ -9,9 +9,8 @@ import androidx.annotation.RequiresApi;
 
 public class MyService extends Service {
 
-    private Context context = this;
+    private final Context context = this;
     private static final int NOTIFY_ID = 1;
-    private String nameOfTiming = "Timings";
 
 
     @Override
@@ -34,6 +33,7 @@ public class MyService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void runAsForeground(){
         new NotifChanel(context).activationForegroundChannel();
+        String nameOfTiming = "Timings";
         startForeground(NOTIFY_ID, new NotifChanel(context).startNotif(nameOfTiming));
     }
 

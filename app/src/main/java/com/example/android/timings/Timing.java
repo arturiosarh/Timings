@@ -29,8 +29,10 @@ import androidx.annotation.RequiresApi;
 
 import java.text.NumberFormat;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 
@@ -362,7 +364,8 @@ public class Timing extends Activity {
 
                 LocalDateTime localDateTime;
                 localDateTime = timeOfBegin.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
-                Duration duration01 = Duration.between(timeOfBegin, localDateTime);
+                Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+                //Duration duration01 = Duration.between(timeOfBegin, localDateTime);
 
                 int beginDays = days;
                 if (days > 0 && timer.equals(LocalTime.of(0, 0, 0))) {
@@ -376,9 +379,9 @@ public class Timing extends Activity {
                     context.startService(intent);  // запускаем фоновый сервис с уведомлением
 
                     Intent intent01 = new Intent(context, MyReceiver.class);
-                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent01, PendingIntent.FLAG_IMMUTABLE);
+                    pendingIntent = PendingIntent.getBroadcast(context, 135, intent01, PendingIntent.FLAG_IMMUTABLE);
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, duration01.toMillis(), pendingIntent);
+                    alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, instant.toEpochMilli(), instant.toEpochMilli(), pendingIntent);
 
                     laps = 0;
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
@@ -434,8 +437,7 @@ public class Timing extends Activity {
                                 laps++;
                                 LocalDateTime ldtn = LocalDateTime.now();
                                 LocalDateTime ldt = ldtn.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
-                                Duration duration02 = Duration.between(ldtn, ldt);
-                                alarmManager.set(AlarmManager.RTC_WAKEUP, duration02.toMillis(), pendingIntent);
+                                //Instant instant1 = ldt.toInstant(ZoneOffset.UTC);
                                 textView1_1_1_01.setText(NumberFormat.getNumberInstance()
                                         .format(laps));
                                 nm = (NotificationManager) context.

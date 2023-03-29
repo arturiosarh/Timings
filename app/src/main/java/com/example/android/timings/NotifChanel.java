@@ -52,7 +52,7 @@ public class NotifChanel extends Activity {
         NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence name = "Фоновое оповещение";
         String description = "foreground_channel";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
+        int importance = NotificationManager.IMPORTANCE_MIN;
 
         NotificationChannel mChannel = new NotificationChannel("foreground_channel", name, importance);
         mChannel.setName(name);
