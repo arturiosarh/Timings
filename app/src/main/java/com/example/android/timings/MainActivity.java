@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (((App) getApplication()).getTimings() == null) {
             ((App) getApplication()).setTimings(new Timing[numberOfTimings]);
-            timingArray = new TimingArray(context,sharedPreferences);
+            timingArray = new TimingArray(context, sharedPreferences, activity);
             ((App) getApplication()).setTimings(timingArray.setArrayListTiming(
                     ((App) getApplication()).getTimings(), notifChanels));
         }

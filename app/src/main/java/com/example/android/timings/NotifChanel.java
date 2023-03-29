@@ -71,13 +71,18 @@ public class NotifChanel extends Activity {
                 PendingIntent.getActivity(context, 0, notificationIntent,
                         PendingIntent.FLAG_IMMUTABLE);
         nowTime = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String nowTimeTxt = nowTime.format(dtf);
+        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+        String nowTimeTxt = nowTime.format(dtf1);
 
-        Notification notification = new Notification
-                .Builder(context)
+        Notification notification = new NotificationCompat.Builder(context,"my_channel")
                 .setContentTitle(nameOfTiming)
                 .setContentText("На тайминге " + nameOfTiming + " время закончилось " + laps + " раз(а) с "+ startTime + " до " + nowTimeTxt +" !")
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .addLine("На тайминге " + nameOfTiming)
+                        .addLine("время закончилось " + laps + " раз(а)")
+                        .addLine("с "+ startTime)
+                        .addLine(" до " + nowTimeTxt +" !"))
                 .setSmallIcon(R.drawable.timer)
                 .setContentIntent(pendingIntent)
                 .setChannelId("my_channel")

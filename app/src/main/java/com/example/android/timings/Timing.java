@@ -4,8 +4,8 @@ import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.CENTER_HORIZONTAL;
 import static android.view.Gravity.CENTER_VERTICAL;
-import static android.view.Gravity.END;
 import static android.view.Gravity.START;
+import static android.view.Gravity.TOP;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,11 +14,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,28 +34,25 @@ import androidx.annotation.RequiresApi;
 
 import java.text.NumberFormat;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 
 public class Timing extends Activity {
 
-    private int NOTIFY_ID;               //уведомления
-    private NotifChanel notifChanel;
+    private final int NOTIFY_ID;               //уведомления
+    private final NotifChanel notifChanel;
     private NotificationManager nm;
 
     private String nameOfTiming;
     private int minutes;
     private int beginMinutes;
     private int hours;
-    private int beginHours;
+    private final int beginHours;
     private int days;
     private int daysInTimer;
     private int laps;
-    private int count;
 
     private Timer myTimer;
     //private Timer newTimer;
@@ -76,10 +78,9 @@ public class Timing extends Activity {
     private final int idTextView1_1_1_01;
     private TextView textView1_1_1_1;
     private TextView textView1_1_2;
-    private Button button1_5_1;
-    private Button button1_5_2;
     private EditText editText1_1_3;
     private TextView textView1_1_1_01;
+    private Activity activity;
 
     public Timing(Context context,
                   String nameOfTiming,
@@ -90,7 +91,6 @@ public class Timing extends Activity {
                   int days,
                   int daysInTimer,
                   int laps,
-                  int count,
                   String time,
                   String nowTimeBegin,
                   String nowTimeBeginFull,
@@ -101,7 +101,8 @@ public class Timing extends Activity {
                   int idButton1_5_2,
                   int idEditText1_1_3,
                   int idTextView1_1_1_01,
-                  NotifChanel notifChanel) {
+                  NotifChanel notifChanel,
+                  Activity activity) {
         this.context = context;
         this.nameOfTiming = nameOfTiming;
         this.minutes = minutes;
@@ -111,7 +112,6 @@ public class Timing extends Activity {
         this.days = days;
         this.daysInTimer = daysInTimer;
         this.laps = laps;
-        this.count = count;
         this.time = time;
         this.nowTimeBegin = nowTimeBegin;
         this.nowTimeBeginFull = nowTimeBeginFull;
@@ -123,6 +123,7 @@ public class Timing extends Activity {
         this.idEditText1_1_3 = idEditText1_1_3;
         this.idTextView1_1_1_01 = idTextView1_1_1_01;
         this.notifChanel = notifChanel;
+        this.activity = activity;
     }
 
     public void setBeginTimeOnZero() {
@@ -141,13 +142,14 @@ public class Timing extends Activity {
 
             float dest = context.getResources().getDisplayMetrics().density;
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-            DateTimeFormatter dtff = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+            DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
 
             linearLayout1 = new LinearLayout(context);
             LinearLayout.LayoutParams linerLayout1Params = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             linearLayout1.setLayoutParams(linerLayout1Params);
             linearLayout1.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout1.setBackgroundResource(androidx.cardview.R.color.cardview_dark_background);
 
             LinearLayout linearLayout1_1 = new LinearLayout(context);
             LinearLayout.LayoutParams linearLayout1_1Params = new LinearLayout.LayoutParams
@@ -166,39 +168,10 @@ public class Timing extends Activity {
             linearLayout1_1_1.setOrientation(LinearLayout.HORIZONTAL);
             linearLayout1_1.addView(linearLayout1_1_1);
 
-            LinearLayout linearLayout1_1_01 = new LinearLayout(context);
-            LinearLayout.LayoutParams linearLayout1_1_01Params = new LinearLayout.LayoutParams
-                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            linearLayout1_1_01Params.gravity = START | BOTTOM;
-            linearLayout1_1_01Params.setMargins(0,0,50,0);
-            linearLayout1_1_01.setLayoutParams(linearLayout1_1_01Params);
-            linearLayout1_1_01.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayout1_1_1.addView(linearLayout1_1_01);
-
-            textView1_1_1_01 = new TextView(context);
-            LinearLayout.LayoutParams textView1_1_1_01Params = new LinearLayout.LayoutParams
-                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            textView1_1_1_01.setLayoutParams(textView1_1_1_01Params);
-            textView1_1_1_01Params.setMargins(0,0,0,0);
-            textView1_1_1_01Params.gravity = BOTTOM;
-            textView1_1_1_01.setText("" + laps);
-            textView1_1_1_01.setTextSize(30);
-            textView1_1_1_01.setId(idTextView1_1_1_01);
-            linearLayout1_1_01.addView(textView1_1_1_01);
-
-            View view1_1_1_02 = new View(context);
-            LinearLayout.LayoutParams view1_1_1_02Params = new LinearLayout.LayoutParams
-                    ((int) (20 * dest), (int) (20 * dest));
-            view1_1_1_02.setLayoutParams(view1_1_1_02Params);
-            view1_1_1_02Params.gravity = BOTTOM;
-            view1_1_1_02Params.setMargins(0, 0, 0, 30);
-            view1_1_1_02.setBackgroundResource(R.drawable. continue_icon);
-            linearLayout1_1_01.addView(view1_1_1_02);
-
             LinearLayout linearLayout1_1_02 = new LinearLayout(context);
             LinearLayout.LayoutParams linearLayout1_1_02Params = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            linearLayout1_1_02Params.gravity = END;
+            linearLayout1_1_02Params.gravity = CENTER;
             linearLayout1_1_02Params.setMargins(0,0,0,0);
             linearLayout1_1_02.setLayoutParams(linearLayout1_1_02Params);
             linearLayout1_1_02.setOrientation(LinearLayout.HORIZONTAL);
@@ -210,7 +183,7 @@ public class Timing extends Activity {
             textView1_1_1_1.setLayoutParams(textView1_1_1_1Params);
             textView1_1_1_1Params.gravity = BOTTOM;
             textView1_1_1_1.setText("0");
-            textView1_1_1_1.setTextSize(40);
+            textView1_1_1_1.setTextSize(30);
             textView1_1_1_1.setId(idTextView1_1_1_1);
             linearLayout1_1_02.addView(textView1_1_1_1);
 
@@ -219,8 +192,9 @@ public class Timing extends Activity {
                     (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             textView1_1_1_2.setLayoutParams(textView1_1_1_2Params);
             textView1_1_1_2Params.gravity = BOTTOM;
-            textView1_1_1_2.setText("дней");
-            textView1_1_1_2.setTextSize(20);
+            textView1_1_1_2.setText(" дней");
+            textView1_1_1_2.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            textView1_1_1_2.setTextSize(15);
             linearLayout1_1_02.addView(textView1_1_1_2);
 
             textView1_1_2 = new TextView(context);
@@ -229,9 +203,18 @@ public class Timing extends Activity {
             textView1_1_2Params.gravity = CENTER_VERTICAL;
             textView1_1_2.setLayoutParams(textView1_1_2Params);
             textView1_1_2.setText(dtf.format(LocalTime.of(0,0,0)));
-            textView1_1_2.setTextSize(40);
+            textView1_1_2.setTextSize(30);
             textView1_1_2.setId(idTextView1_1_2);
+            textView1_1_2.setBackgroundResource(androidx.cardview.R.color.cardview_shadow_start_color);
             linearLayout1_1.addView(textView1_1_2);
+
+            LinearLayout linearLayout1_1_03 = new LinearLayout(context);
+            LinearLayout.LayoutParams linearLayout1_1_03Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            linearLayout1_1_02Params.setMargins(0,0,0,0);
+            linearLayout1_1_02.setLayoutParams(linearLayout1_1_03Params);
+            linearLayout1_1_02.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout1_1.addView(linearLayout1_1_03);
 
             editText1_1_3 = new EditText(context);
             LinearLayout.LayoutParams editText1_1_3Params = new LinearLayout.LayoutParams
@@ -239,14 +222,111 @@ public class Timing extends Activity {
             editText1_1_3Params.gravity = CENTER_HORIZONTAL;
             editText1_1_3.setLayoutParams(editText1_1_3Params);
             editText1_1_3.setCursorVisible(false);
-            editText1_1_3.setEms(7);
-            editText1_1_3.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            editText1_1_3.setFadingEdgeLength(9);
-            editText1_1_3.setLines(1);
-            editText1_1_3.setMaxLines(1);
+            editText1_1_3.setTextSize(15);
+            editText1_1_3.setEms(4);
             editText1_1_3.setText(nameOfTiming);
             editText1_1_3.setId(idEditText1_1_3);
-            linearLayout1_1.addView(editText1_1_3);
+                    editText1_1_3.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (editText1_1_3.getLineCount() > 1) {
+                                editText1_1_3.setText(s.toString().substring(0, before));
+                                editText1_1_3.setSelection(before);
+                                nameOfTiming = editText1_1_3.getText().toString();
+                            }
+                            ;
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        }
+                    });
+            linearLayout1_1_03.addView(editText1_1_3);
+
+            LinearLayout linearLayout1_1_01 = new LinearLayout(context);
+            LinearLayout.LayoutParams linearLayout1_1_01Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            linearLayout1_1_01Params.gravity = START | BOTTOM;
+            linearLayout1_1_01Params.setMargins(0,0,10,0);
+            linearLayout1_1_01.setLayoutParams(linearLayout1_1_01Params);
+            linearLayout1_1_01.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout1_1_03.addView(linearLayout1_1_01);
+
+            textView1_1_1_01 = new TextView(context);
+            LinearLayout.LayoutParams textView1_1_1_01Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            textView1_1_1_01.setLayoutParams(textView1_1_1_01Params);
+            textView1_1_1_01Params.setMargins(0,0,0,0);
+            textView1_1_1_01Params.gravity = TOP;
+            textView1_1_1_01.setText("" + laps);
+            textView1_1_1_01.setTextSize(25);
+            textView1_1_1_01.setId(idTextView1_1_1_01);
+            linearLayout1_1_01.addView(textView1_1_1_01);
+
+            View view1_1_1_02 = new View(context);
+            LinearLayout.LayoutParams view1_1_1_02Params = new LinearLayout.LayoutParams
+                    ((int) (11 * dest), (int) (11 * dest));
+            view1_1_1_02.setLayoutParams(view1_1_1_02Params);
+            view1_1_1_02Params.gravity = BOTTOM;
+            view1_1_1_02Params.setMargins(0, 0, 0, 30);
+            view1_1_1_02.setBackgroundResource(R.drawable. continue_icon);
+            linearLayout1_1_01.addView(view1_1_1_02);
+
+            LinearLayout linearLayout1_15 = new LinearLayout(context);
+            LinearLayout.LayoutParams linearLayout1_15Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            linearLayout1_15.setLayoutParams(linearLayout1_15Params);
+            linearLayout1_15.setOrientation(LinearLayout.VERTICAL);
+            linearLayout1.addView(linearLayout1_15);
+
+            Button button1_15_1 = new Button(context);
+            LinearLayout.LayoutParams button1_15_1Params = new LinearLayout.LayoutParams
+                    ((int) (50 * dest), (int) (50 * dest));
+            button1_15_1.setLayoutParams(button1_15_1Params);
+            button1_15_1.setBackgroundResource(R.drawable.arrow_up);
+
+            linearLayout1_15.addView(button1_15_1);
+
+            LinearLayout linearLayout1_15_2 = new LinearLayout(context);
+            LinearLayout.LayoutParams linearLayout1_15_2Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            linearLayout1_15_2Params.gravity = CENTER;
+            linearLayout1_15_2.setLayoutParams(linearLayout1_15_2Params);
+            linearLayout1_15_2.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout1_15.addView(linearLayout1_15_2);
+
+            TextView textView1_15_2 = new TextView(context);
+            LinearLayout.LayoutParams textView1_15_2Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            textView1_15_2Params.gravity = CENTER;
+            textView1_15_2Params.setMargins(10,0,0,0);
+            textView1_15_2.setLayoutParams(textView1_15_2Params);
+            textView1_15_2.setText(NumberFormat.getNumberInstance().format(days));
+            textView1_15_2.setTextSize(30);
+            linearLayout1_15_2.addView(textView1_15_2);
+
+            TextView textView1_15_1 = new TextView(context);
+            LinearLayout.LayoutParams textView1_15_1Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            textView1_15_1Params.gravity = BOTTOM;
+            textView1_15_1.setLayoutParams(textView1_15_1Params);
+            textView1_15_1.setText("д.");
+            textView1_15_1.setTextSize(15);
+            linearLayout1_15_2.addView(textView1_15_1);
+
+            Button button1_15_3 = new Button(context);
+            LinearLayout.LayoutParams button1_15_3Params = new LinearLayout.LayoutParams
+                    ((int) (50 * dest), (int) (50 * dest));
+            button1_15_3Params.setMargins(0, (int) (6 * dest), 0, 0);
+            button1_15_3.setLayoutParams(button1_15_3Params);
+            button1_15_3.setBackgroundResource(R.drawable.arrow_up);
+            button1_15_3.setRotation(180);
+            linearLayout1_15.addView(button1_15_3);
 
             LinearLayout linearLayout1_2 = new LinearLayout(context);
             LinearLayout.LayoutParams linearLayout1_2Params = new LinearLayout.LayoutParams
@@ -257,7 +337,7 @@ public class Timing extends Activity {
 
             Button button1_2_1 = new Button(context);
             LinearLayout.LayoutParams button1_2_1Params = new LinearLayout.LayoutParams
-                    ((int) (60 * dest), (int) (60 * dest));
+                    ((int) (50 * dest), (int) (50 * dest));
             button1_2_1.setLayoutParams(button1_2_1Params);
             button1_2_1.setBackgroundResource(R.drawable.arrow_up);
 
@@ -269,12 +349,12 @@ public class Timing extends Activity {
             textView1_2_2Params.gravity = CENTER;
             textView1_2_2.setLayoutParams(textView1_2_2Params);
             textView1_2_2.setText(NumberFormat.getNumberInstance().format(hours));
-            textView1_2_2.setTextSize(40);
+            textView1_2_2.setTextSize(30);
             linearLayout1_2.addView(textView1_2_2);
 
             Button button1_2_3 = new Button(context);
             LinearLayout.LayoutParams button1_2_3Params = new LinearLayout.LayoutParams
-                    ((int) (60 * dest), (int) (60 * dest));
+                    ((int) (50 * dest), (int) (50 * dest));
             button1_2_3Params.setMargins(0, (int) (6 * dest), 0, 0);
             button1_2_3.setLayoutParams(button1_2_3Params);
             button1_2_3.setBackgroundResource(R.drawable.arrow_up);
@@ -287,7 +367,7 @@ public class Timing extends Activity {
             textView1_3Params.gravity = CENTER_VERTICAL;
             textView1_3.setLayoutParams(textView1_3Params);
             textView1_3.setText(":");
-            textView1_3.setTextSize(40);
+            textView1_3.setTextSize(30);
             textView1_3Params.setMargins(0, (int) (-4 * dest), 0, 0);
             linearLayout1.addView(textView1_3);
 
@@ -300,7 +380,7 @@ public class Timing extends Activity {
 
             Button button1_4_1 = new Button(context);
             LinearLayout.LayoutParams button1_4_1Params = new LinearLayout.LayoutParams
-                    ((int) (60 * dest), (int) (60 * dest));
+                    ((int) (50 * dest), (int) (50 * dest));
             button1_4_1.setLayoutParams(button1_4_1Params);
             button1_4_1.setBackgroundResource(R.drawable.arrow_up);
 
@@ -312,12 +392,12 @@ public class Timing extends Activity {
             textView1_4_2Params.gravity = CENTER;
             textView1_4_2.setLayoutParams(textView1_4_2Params);
             textView1_4_2.setText(NumberFormat.getNumberInstance().format(minutes));
-            textView1_4_2.setTextSize(40);
+            textView1_4_2.setTextSize(30);
             linearLayout1_4.addView(textView1_4_2);
 
             Button button1_4_3 = new Button(context);
             LinearLayout.LayoutParams button1_4_3Params = new LinearLayout.LayoutParams
-                    ((int) (60 * dest), (int) (60 * dest));
+                    ((int) (50 * dest), (int) (50 * dest));
             button1_4_3Params.setMargins(0, (int) (6 * dest), 0, 0);
             button1_4_3.setLayoutParams(button1_4_3Params);
             button1_4_3.setBackgroundResource(R.drawable.arrow_up);
@@ -332,32 +412,22 @@ public class Timing extends Activity {
             linearLayout1_5.setOrientation(LinearLayout.VERTICAL);
             linearLayout1.addView(linearLayout1_5);
 
-            button1_5_1 = new Button(context);
+            Button button1_5_1 = new Button(context);
             LinearLayout.LayoutParams button1_5_1Params = new LinearLayout.LayoutParams
-                    ((int) (50 * dest), (int) (50 * dest));
-            button1_5_1Params.setMargins(10, 107, 0, 0);
+                    ((int) (43 * dest), (int) (43 * dest));
+            button1_5_1Params.setMargins(10,81, 0, 0);
             button1_5_1Params.gravity = CENTER_VERTICAL;
             button1_5_1.setLayoutParams(button1_5_1Params);
             button1_5_1.setId(idButton1_5_1);
             button1_5_1.setBackgroundResource(R.drawable.play1);
             button1_5_1.setOnClickListener(v -> {
                 timeOfBegin = LocalDateTime.now();
-                nowTimeBeginFull = dtff.format(timeOfBegin);
+                nowTimeBeginFull = dtf1.format(timeOfBegin);
                 nowTimeBegin = dtf.format(timeOfBegin);
                 if (myTimer != null) {
                     myTimer.cancel();
                 }
                 nameOfTiming = editText1_1_3.getText().toString();
-                if (hours > 0) {
-                    days = hours / 24;
-                } else {
-                    days = 0;
-                }
-                if (days > 0) {
-                    beginHours = hours % 24;
-                } else {
-                    beginHours = hours;
-                }
                 beginMinutes = minutes;
                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                 daysInTimer = days;
@@ -373,8 +443,8 @@ public class Timing extends Activity {
                 if (days > 0 && timer.equals(LocalTime.of(0, 0, 0))) {
                     daysInTimer--;
                 }
-                if (hours > 0 || minutes > 0) {
-                    Toast.makeText(context, nameOfTiming + ": установлен на " + hours + " ч. и " + minutes + " м." +
+                if (days > 0 || hours > 0 || minutes > 0) {
+                    Toast.makeText(context, nameOfTiming + ": установлен на " + days + " дней " + hours + " ч. и " + minutes + " м." +
                                     " в " + nowTimeBeginFull,
                             Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, MyService.class);
@@ -389,9 +459,10 @@ public class Timing extends Activity {
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
                     myTimer = new Timer();  //добавление таймера
                     new RunTimer().tic(myTimer, () -> {
+                        nameOfTiming = editText1_1_3.getText().toString();
 
                         LocalDateTime localDateTimeNow = LocalDateTime.now();
-                        LocalDateTime nTBF = LocalDateTime.parse(nowTimeBeginFull,dtff);
+                        LocalDateTime nTBF = LocalDateTime.parse(nowTimeBeginFull,dtf1);
                         Duration duration = Duration.between(nTBF, localDateTimeNow);
                         long secondsPassed = duration.getSeconds();
 
@@ -437,14 +508,11 @@ public class Timing extends Activity {
                                 daysInTimer = days;
                                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                                 laps++;
-                                LocalDateTime ldtn = LocalDateTime.now();
-                                LocalDateTime ldt = ldtn.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
-                                //Instant instant1 = ldt.toInstant(ZoneOffset.UTC);
                                 textView1_1_1_01.setText(NumberFormat.getNumberInstance()
                                         .format(laps));
                                 nm = (NotificationManager) context.
                                         getSystemService(MyService.NOTIFICATION_SERVICE);
-                                nm.notify(NOTIFY_ID, notifChanel.getNotif(nameOfTiming, laps, nowTimeBegin));
+                                nm.notify(NOTIFY_ID, notifChanel.getNotif(nameOfTiming, laps, nowTimeBeginFull));
                             }
                         }
                     }, 1000);
@@ -458,9 +526,9 @@ public class Timing extends Activity {
             });
             linearLayout1_5.addView(button1_5_1);
 
-            button1_5_2 = new Button(context);
+            Button button1_5_2 = new Button(context);
             LinearLayout.LayoutParams button1_5_2Params = new LinearLayout.LayoutParams
-                    ((int) (40 * dest), (int) (40 * dest));
+                    ((int) (35 * dest), (int) (35 * dest));
             button1_5_2Params.setMargins(20, 10, 0, 0);
             button1_5_2Params.gravity = CENTER_VERTICAL;
             button1_5_2.setLayoutParams(button1_5_2Params);
@@ -472,32 +540,71 @@ public class Timing extends Activity {
                 if (myTimer != null) {
                     myTimer.cancel();
                     alarmManager.cancel(pendingIntent);
-                    timer = LocalTime.of(0, 0, 0);
-                    time = dtf.format(timer);
-                    laps = 0;
-                    textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
-                    textView1_1_2.setText(time);
-                } else {
-                    timer = LocalTime.of(0, 0, 0);
-                    time = dtf.format(timer);
-                    laps = 0;
-                    textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
-                    textView1_1_2.setText(time);
                 }
+                timer = LocalTime.of(0, 0, 0);
+                time = dtf.format(timer);
+                laps = 0;
+                textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
+                textView1_1_2.setText(time);
                 daysInTimer = 0;
                 textView1_1_1_1.setText(NumberFormat.getNumberInstance().format(daysInTimer));
             });
             linearLayout1_5.addView(button1_5_2);
+
+            button1_15_1.setOnTouchListener((v, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    v.animate().scaleX(0.90f).scaleY(0.90f).setDuration(1);
+                    buttonRunner = new Timer();
+                    new RunTimer().tic(buttonRunner, () -> {
+                        days++;
+                        textView1_15_2.setText(NumberFormat.getNumberInstance().format(days));
+                        textView1_2_2.setText(NumberFormat.getNumberInstance().format(hours));
+                        textView1_4_2.setText(NumberFormat.getNumberInstance().format(minutes));
+                    }, 150);
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    buttonRunner.cancel();
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(1);
+                } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
+                    buttonRunner.cancel();
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(1);
+                }
+                return true;
+            });
+
+            button1_15_3.setOnTouchListener((v, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    v.animate().scaleX(0.90f).scaleY(0.90f).setDuration(1);
+                    buttonRunner = new Timer();
+                    new RunTimer().tic(buttonRunner, () -> {
+                        if (days > 0) {
+                            days--;
+                        }
+                        textView1_15_2.setText(NumberFormat.getNumberInstance().format(days));
+                        textView1_2_2.setText(NumberFormat.getNumberInstance().format(hours));
+                        textView1_4_2.setText(NumberFormat.getNumberInstance().format(minutes));
+                    }, 150);
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    buttonRunner.cancel();
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(1);
+                } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
+                    buttonRunner.cancel();
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(1);
+                }
+                return true;
+            });
 
             button1_2_1.setOnTouchListener((v, event) -> {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.animate().scaleX(0.90f).scaleY(0.90f).setDuration(1);
                     buttonRunner = new Timer();
                     new RunTimer().tic(buttonRunner, () -> {
-                        hours++;
-                        if (hours > 0) {
-                            days = hours / 24;
-                        }
+                       if (hours >= 23) {
+                           hours = 0;
+                           days++;
+                       } else {
+                           hours++;
+                       }
+                        textView1_15_2.setText(NumberFormat.getNumberInstance().format(days));
                         textView1_2_2.setText(NumberFormat.getNumberInstance().format(hours));
                         textView1_4_2.setText(NumberFormat.getNumberInstance().format(minutes));
                     }, 150);
@@ -518,10 +625,13 @@ public class Timing extends Activity {
                     new RunTimer().tic(buttonRunner, () -> {
                         if (hours > 0) {
                             hours--;
+                        } else {
+                            if (days > 0) {
+                                hours = 23;
+                                days--;
+                            }
                         }
-                        if (hours > 0) {
-                            days = hours / 24;
-                        }
+                        textView1_15_2.setText(NumberFormat.getNumberInstance().format(days));
                         textView1_2_2.setText(NumberFormat.getNumberInstance().format(hours));
                         textView1_4_2.setText(NumberFormat.getNumberInstance().format(minutes));
                     }, 150);
@@ -542,13 +652,16 @@ public class Timing extends Activity {
                     new RunTimer().tic(buttonRunner, () -> {
                         if (minutes >= 59) {
                             minutes = 0;
-                            hours++;
-                            if (hours > 0) {
-                                days = hours / 24;
+                            if (hours >= 23) {
+                                hours = 0;
+                                days++;
+                            } else {
+                                hours++;
                             }
                         } else {
                             minutes++;
                         }
+                        textView1_15_2.setText(NumberFormat.getNumberInstance().format(days));
                         textView1_4_2.setText(NumberFormat.getNumberInstance().format(minutes));
                         textView1_2_2.setText(NumberFormat.getNumberInstance().format(hours));
                     }, 150);
@@ -573,9 +686,14 @@ public class Timing extends Activity {
                             if (hours > 0) {
                                 minutes = 59;
                                 hours--;
-                                days = hours / 24;
+                            } else {
+                                if (days > 0) {
+                                    hours = 23;
+                                    days--;
+                                }
                             }
                         }
+                        textView1_15_2.setText(NumberFormat.getNumberInstance().format(days));
                         textView1_4_2.setText(NumberFormat.getNumberInstance().format(minutes));
                         textView1_2_2.setText(NumberFormat.getNumberInstance().format(hours));
                     }, 150);
