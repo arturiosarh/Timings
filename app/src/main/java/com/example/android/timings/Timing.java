@@ -54,7 +54,7 @@ public class Timing extends Activity {
     private int minutes;
     private int beginMinutes;
     private int hours;
-    private final int beginHours;
+    private int beginHours;
     private int days;
     private int daysInTimer;
     private int laps;
@@ -459,6 +459,7 @@ public class Timing extends Activity {
                 }
                 nameOfTiming = editText1_1_3.getText().toString();
                 beginMinutes = minutes;
+                beginHours = hours;
                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                 daysInTimer = days;
 
