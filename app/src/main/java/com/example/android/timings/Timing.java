@@ -536,7 +536,10 @@ public class Timing extends Activity {
                                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                                 laps++;
                                 LocalDateTime localDateTime2 = LocalDateTime.now();
-                                LocalDateTime localDateTime1 = localDateTime2.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
+                                LocalDateTime localDateTime1 = localDateTime2
+                                        .plusDays(daysInTimer)
+                                        .plusHours(beginHours)
+                                        .plusMinutes(beginMinutes);
                                 Instant instant1 = localDateTime1.toInstant(ZoneOffset.UTC);
                                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, instant1.toEpochMilli(), pendingIntent);
                                 textView1_1_1_01.setText(NumberFormat.getNumberInstance()
