@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
-        int count = 0;
+        /*int count = 0;
         for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
             if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
                 count++;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
-        }
+        }*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
-        int count = 0;
+        /*int count = 0;
         for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
             if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
                 count++;
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
-        }
+        }*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("nowTimeBeginFull" + i, ((App) getApplication()).getTimings()[i].getNowTimeBeginFull());
             editor.apply();
         }
-        int count = 0;
+        /*int count = 0;
         for (int i = 0; i < ((App) getApplication()).getTimings().length; i++) {
             if (((App) getApplication()).getTimings()[i].getMyTimer() == null) {
                 count++;
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
-        }
+        }*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         context = this;
         sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        MyReceiver receiver = new MyReceiver();
         notifChanels = new NotifChanel[numberOfTimings];
         activity = this;
         new NotifChanel(context).activation();

@@ -103,8 +103,8 @@ public class StartButtons extends ViewModel {
                             }
                         }
 
-                        int permission3Status = ContextCompat.checkSelfPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                        if (permission3Status != PackageManager.PERMISSION_GRANTED) {
+                        int permission4Status = ContextCompat.checkSelfPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                        if (permission4Status != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS}, 25);
                         }
 

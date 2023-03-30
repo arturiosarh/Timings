@@ -426,24 +426,31 @@ public class Timing extends Activity {
             button1_5_1.setId(idButton1_5_1);
             button1_5_1.setBackgroundResource(R.drawable.play1);
             button1_5_1.setOnClickListener(v -> {
+
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                    int permission1Status = ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS);
+                    int permission1Status = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS);
                     if (permission1Status != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 22);
+                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 22);
                     }
                 }
 
-                int permission2Status = ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECEIVE_BOOT_COMPLETED);
+                int permission2Status = ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_BOOT_COMPLETED);
                 if (permission2Status != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity, new String[] {android.Manifest.permission.RECEIVE_BOOT_COMPLETED},23);
+                    ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.RECEIVE_BOOT_COMPLETED},23);
                 }
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                    int permission3Status = ContextCompat.checkSelfPermission(context, android.Manifest.permission.SCHEDULE_EXACT_ALARM);
+                    int permission3Status = ContextCompat.checkSelfPermission(context, Manifest.permission.SCHEDULE_EXACT_ALARM);
                     if (permission3Status != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, 24);
                     }
                 }
+
+                int permission4Status = ContextCompat.checkSelfPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                if (permission4Status != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS}, 25);
+                }
+
                 timeOfBegin = LocalDateTime.now();
                 nowTimeBeginFull = dtf1.format(timeOfBegin);
                 nowTimeBegin = dtf.format(timeOfBegin);
@@ -458,7 +465,7 @@ public class Timing extends Activity {
                 LocalDateTime localDateTime;
                 localDateTime = timeOfBegin.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
                 //LocalDateTime localDateTime1 = timeOfBegin.plusSeconds(30);
-                Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+                //Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
                 Duration duration01 = Duration.between(timeOfBegin, localDateTime); //промежуток времени
                 //Duration duration02 = Duration.between(timeOfBegin, localDateTime1); //ожидание намерения
                 /*Calendar notifyTime = new GregorianCalendar();
@@ -471,16 +478,17 @@ public class Timing extends Activity {
                     daysInTimer--;
                 }
                 if (days > 0 || hours > 0 || minutes > 0) {
-                    Toast.makeText(context, nameOfTiming + ": установлен на " + days + " дней " + hours + " ч. и " + minutes + " м." +
-                                    " в " + nowTimeBeginFull,
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, nameOfTiming + ": установлен", Toast.LENGTH_LONG)
+                            .show();
+                    Toast.makeText(context, "на " + days + " дней " + hours + " ч. и " + minutes + " м." +
+                                    " в " + nowTimeBeginFull, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context, MyService.class);
                     context.startService(intent);  // запускаем фоновый сервис с уведомлением
 
                     Intent intent01 = new Intent(context, MyReceiver.class);
                     pendingIntent = PendingIntent.getBroadcast(context, 135, intent01, PendingIntent.FLAG_IMMUTABLE);
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, instant.toEpochMilli(), pendingIntent);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration01.toMillis(), pendingIntent);
 
                     laps = 0;
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
@@ -540,8 +548,9 @@ public class Timing extends Activity {
                                         .plusDays(daysInTimer)
                                         .plusHours(beginHours)
                                         .plusMinutes(beginMinutes);
-                                Instant instant1 = localDateTime1.toInstant(ZoneOffset.UTC);
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, instant1.toEpochMilli(), pendingIntent);
+                                Duration duration2 = Duration.between(localDateTime2,localDateTime1);
+                                //Instant instant1 = localDateTime1.toInstant(ZoneOffset.UTC);
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration2.toMillis(), pendingIntent);
                                 textView1_1_1_01.setText(NumberFormat.getNumberInstance()
                                         .format(laps));
                                 nm = (NotificationManager) context.
