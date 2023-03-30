@@ -35,7 +35,7 @@ public class NotifChanel extends Activity {
         NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence name = "Уведомления тайминогов";
         String description = "my_channel";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
+        int importance = NotificationManager.IMPORTANCE_MAX;
 
         NotificationChannel mChannel = new NotificationChannel("my_channel", name, importance);
         mChannel.setName(name);
@@ -52,7 +52,7 @@ public class NotifChanel extends Activity {
         NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence name = "Фоновое оповещение";
         String description = "foreground_channel";
-        int importance = NotificationManager.IMPORTANCE_MIN;
+        int importance = NotificationManager.IMPORTANCE_LOW;
 
         NotificationChannel mChannel = new NotificationChannel("foreground_channel", name, importance);
         mChannel.setName(name);
@@ -87,7 +87,7 @@ public class NotifChanel extends Activity {
                 .setContentIntent(pendingIntent)
                 .setChannelId("my_channel")
                 .setOngoing(false)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setDefaults(Notification.DEFAULT_SOUND)
                 .setSound(RingtoneManager.getDefaultUri(TYPE_ALARM))
                 .build();

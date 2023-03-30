@@ -73,25 +73,43 @@ public class StartButtons extends ViewModel {
             button9.setText("+");
             button9.setTextSize(20);
 
+            LinearLayout linearLayout11 = new LinearLayout(context);
+            LinearLayout.LayoutParams linearLayout11Params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            linearLayout11.setLayoutParams(linearLayout11Params);
+            linearLayout11.setOrientation(LinearLayout.VERTICAL);
+
             button9.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onClick(View v) {   //добавить таймер
                     try {
-                        int permission1Status = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS);
-
-                        if (permission1Status != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.POST_NOTIFICATIONS},22);
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                            int permission1Status = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS);
+                            if (permission1Status != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 22);
+                            }
                         }
 
                         int permission2Status = ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_BOOT_COMPLETED);
-
                         if (permission2Status != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.RECEIVE_BOOT_COMPLETED},23);
                         }
 
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                            int permission3Status = ContextCompat.checkSelfPermission(context, Manifest.permission.SCHEDULE_EXACT_ALARM);
+                            if (permission3Status != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, 24);
+                            }
+                        }
+
+                        int permission3Status = ContextCompat.checkSelfPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                        if (permission3Status != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS}, 25);
+                        }
+
                         if (altNumber < arrayListTiming.length) {
-                            linearLayout.addView(arrayListTiming[altNumber].newTiming());
+                            linearLayout11.addView(arrayListTiming[altNumber].newTiming());
                             altNumber++;
                             editor.putInt(altNumberKey, altNumber);
                             editor.apply();
@@ -135,7 +153,7 @@ public class StartButtons extends ViewModel {
                         if (arrayListTiming[altNumber].getMyTimer() != null)
                             arrayListTiming[altNumber].cancelMyTimer();
                         arrayListTiming[altNumber].setBeginTimeOnZero();
-                        linearLayout.removeView(arrayListTiming[altNumber].removeLinerLayout1());
+                        linearLayout11.removeView(arrayListTiming[altNumber].removeLinerLayout1());
                     } catch (Exception exception) {
                         Toast.makeText(context, exception.toString(),
                                 Toast.LENGTH_SHORT).show();
@@ -225,8 +243,10 @@ public class StartButtons extends ViewModel {
             linearLayout.addView(linearLayout10);
 
             for (int i = 0; i < altNumber; i++) {
-                linearLayout.addView(arrayListTiming[i].newTiming());
+                linearLayout11.addView(arrayListTiming[i].newTiming());
             }
+
+            linearLayout.addView(linearLayout11);
             return scrollView;
 
         } catch (Exception exception) {

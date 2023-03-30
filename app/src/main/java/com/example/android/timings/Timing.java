@@ -7,6 +7,7 @@ import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -14,16 +15,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -31,12 +30,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.text.NumberFormat;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Timer;
 
 public class Timing extends Activity {
@@ -421,6 +426,24 @@ public class Timing extends Activity {
             button1_5_1.setId(idButton1_5_1);
             button1_5_1.setBackgroundResource(R.drawable.play1);
             button1_5_1.setOnClickListener(v -> {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    int permission1Status = ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS);
+                    if (permission1Status != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 22);
+                    }
+                }
+
+                int permission2Status = ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECEIVE_BOOT_COMPLETED);
+                if (permission2Status != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[] {android.Manifest.permission.RECEIVE_BOOT_COMPLETED},23);
+                }
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    int permission3Status = ContextCompat.checkSelfPermission(context, android.Manifest.permission.SCHEDULE_EXACT_ALARM);
+                    if (permission3Status != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, 24);
+                    }
+                }
                 timeOfBegin = LocalDateTime.now();
                 nowTimeBeginFull = dtf1.format(timeOfBegin);
                 nowTimeBegin = dtf.format(timeOfBegin);
@@ -434,10 +457,14 @@ public class Timing extends Activity {
 
                 LocalDateTime localDateTime;
                 localDateTime = timeOfBegin.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
-                LocalDateTime localDateTime1 = timeOfBegin.plusSeconds(30);
-                //Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+                //LocalDateTime localDateTime1 = timeOfBegin.plusSeconds(30);
+                Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
                 Duration duration01 = Duration.between(timeOfBegin, localDateTime); //промежуток времени
-                Duration duration02 = Duration.between(timeOfBegin, localDateTime1); //ожидание намерения
+                //Duration duration02 = Duration.between(timeOfBegin, localDateTime1); //ожидание намерения
+                /*Calendar notifyTime = new GregorianCalendar();
+                notifyTime.set(Calendar.DAY_OF_MONTH, daysInTimer);
+                notifyTime.set(Calendar.HOUR_OF_DAY, beginHours);
+                notifyTime.set(Calendar.MINUTE, beginMinutes);*/
 
                 int beginDays = days;
                 if (days > 0 && timer.equals(LocalTime.of(0, 0, 0))) {
@@ -446,14 +473,14 @@ public class Timing extends Activity {
                 if (days > 0 || hours > 0 || minutes > 0) {
                     Toast.makeText(context, nameOfTiming + ": установлен на " + days + " дней " + hours + " ч. и " + minutes + " м." +
                                     " в " + nowTimeBeginFull,
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context, MyService.class);
                     context.startService(intent);  // запускаем фоновый сервис с уведомлением
 
                     Intent intent01 = new Intent(context, MyReceiver.class);
                     pendingIntent = PendingIntent.getBroadcast(context, 135, intent01, PendingIntent.FLAG_IMMUTABLE);
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, duration02.toMillis(), duration01.toMillis(), pendingIntent);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, instant.toEpochMilli(), pendingIntent);
 
                     laps = 0;
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
@@ -508,6 +535,10 @@ public class Timing extends Activity {
                                 daysInTimer = days;
                                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                                 laps++;
+                                LocalDateTime localDateTime2 = LocalDateTime.now();
+                                LocalDateTime localDateTime1 = localDateTime2.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
+                                Instant instant1 = localDateTime1.toInstant(ZoneOffset.UTC);
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, instant1.toEpochMilli(), pendingIntent);
                                 textView1_1_1_01.setText(NumberFormat.getNumberInstance()
                                         .format(laps));
                                 nm = (NotificationManager) context.
