@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -484,6 +485,7 @@ public class Timing extends Activity {
                     daysInTimer--;
                 }
                 if (days > 0 || hours > 0 || minutes > 0) {
+
                     Toast.makeText(context, nameOfTiming + ": установлен", Toast.LENGTH_LONG)
                             .show();
                     Toast.makeText(context, "на " + days + " дней " + hours + " ч. и " + minutes + " м." +

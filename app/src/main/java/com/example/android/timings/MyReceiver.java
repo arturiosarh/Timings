@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class MyReceiver extends BroadcastReceiver {
+import androidx.legacy.content.WakefulBroadcastReceiver;
+
+public class MyReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent intentService = new Intent(context, MyService.class);
