@@ -108,6 +108,11 @@ public class StartButtons extends ViewModel {
                             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS}, 25);
                         }
 
+                        int permission5Status = ContextCompat.checkSelfPermission(context, Manifest.permission.WAKE_LOCK);
+                        if (permission5Status != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WAKE_LOCK}, 26);
+                        }
+
                         if (altNumber < arrayListTiming.length) {
                             linearLayout11.addView(arrayListTiming[altNumber].newTiming());
                             altNumber++;
