@@ -59,6 +59,7 @@ public class Timing extends Activity {
     private int days;
     private int daysInTimer;
     private int laps;
+    private LocalDateTime finalTime;
 
     private Timer myTimer;
     //private Timer newTimer;
@@ -505,6 +506,7 @@ public class Timing extends Activity {
                         nameOfTiming = editText1_1_3.getText().toString();
 
                         LocalDateTime localDateTimeNow = LocalDateTime.now();
+                        finalTime = localDateTimeNow.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
                         LocalDateTime nTBF = LocalDateTime.parse(nowTimeBeginFull,dtf1);
                         Duration duration = Duration.between(nTBF, localDateTimeNow);
                         long secondsPassed = duration.getSeconds();
@@ -544,11 +546,12 @@ public class Timing extends Activity {
                         textView1_1_2.setText(time);
                         textView1_1_1_1.setText(NumberFormat.getNumberInstance()
                                 .format(daysInTimer));
-                        if (timer.equals(LocalTime.of(0, 0, 0))) {
+                        if (timer.equals(LocalTime.of(0, 0, 0)) || LocalDateTime.now().equals(finalTime)) {
                             if (daysInTimer > 0) {
                                 daysInTimer--;
                             } else {
                                 daysInTimer = days;
+                                finalTime = LocalDateTime.now().plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
                                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                                 laps++;
                                 LocalDateTime localDateTime2 = LocalDateTime.now();
