@@ -71,8 +71,8 @@ public class Timing extends Activity {
     private String nowTimeBeginFull;
 
     private Timer buttonRunner;
-    private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
+    private AlarmManager alarmManager1;
+    private AlarmManager alarmManager2;
 
     private final Context context;
     private LinearLayout linearLayout1;
@@ -419,6 +419,7 @@ public class Timing extends Activity {
             linearLayout1_5.setOrientation(LinearLayout.VERTICAL);
             linearLayout1.addView(linearLayout1_5);
 
+
             Button button1_5_1 = new Button(context);
             LinearLayout.LayoutParams button1_5_1Params = new LinearLayout.LayoutParams
                     ((int) (43 * dest), (int) (43 * dest));
@@ -493,13 +494,14 @@ public class Timing extends Activity {
                                     " в " + nowTimeBeginFull, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context, MyService.class);
                     context.startService(intent);  // запускаем фоновый сервис с уведомлением
+                    laps = 0;
 
                     Intent intent01 = new Intent(context, MyReceiver.class);
-                    pendingIntent = PendingIntent.getBroadcast(context, 135, intent01, PendingIntent.FLAG_IMMUTABLE);
-                    alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration01.toMillis(), pendingIntent);
 
-                    laps = 0;
+                    alarmManager1 = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    PendingIntent pendingIntent1 = PendingIntent.getBroadcast(context, NOTIFY_ID, intent01, PendingIntent.FLAG_IMMUTABLE);
+                    alarmManager1.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration01.toMillis() - 1001, pendingIntent1);
+
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
                     myTimer = new Timer();  //добавление таймера
                     new RunTimer().tic(myTimer, () -> {
@@ -561,11 +563,14 @@ public class Timing extends Activity {
                                         .plusMinutes(beginMinutes);
                                 Duration duration2 = Duration.between(localDateTime2,localDateTime1);
                                 //Instant instant1 = localDateTime1.toInstant(ZoneOffset.UTC);
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration2.toMillis(), pendingIntent);
+                                alarmManager2 = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                                Intent intent02 = new Intent(context, MyReceiver.class);
+                                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, NOTIFY_ID, intent02, PendingIntent.FLAG_IMMUTABLE);
+                                alarmManager2.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration2.toMillis(), pendingIntent2);
                                 textView1_1_1_01.setText(NumberFormat.getNumberInstance()
                                         .format(laps));
                                 nm = (NotificationManager) context.
-                                        getSystemService(MyService.NOTIFICATION_SERVICE);
+                                       getSystemService(MyService.NOTIFICATION_SERVICE);
                                 nm.notify(NOTIFY_ID, notifChanel.getNotif(nameOfTiming, laps, nowTimeBeginFull));
                             }
                         }
@@ -593,7 +598,6 @@ public class Timing extends Activity {
                         Toast.LENGTH_SHORT).show();
                 if (myTimer != null) {
                     myTimer.cancel();
-                    alarmManager.cancel(pendingIntent);
                 }
                 timer = LocalTime.of(0, 0, 0);
                 time = dtf.format(timer);
