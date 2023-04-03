@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -154,6 +155,7 @@ public class Timing extends Activity {
             linearLayout1 = new LinearLayout(context);
             LinearLayout.LayoutParams linerLayout1Params = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            linerLayout1Params.setMargins(10,10,10,0);
             linearLayout1.setLayoutParams(linerLayout1Params);
             linearLayout1.setOrientation(LinearLayout.HORIZONTAL);
             linearLayout1.setBackgroundResource(androidx.cardview.R.color.cardview_dark_background);
@@ -162,6 +164,7 @@ public class Timing extends Activity {
             LinearLayout.LayoutParams linearLayout1_1Params = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             linearLayout1_1Params.gravity = CENTER;
+            linearLayout1_1Params.setMargins(10, 10, 10, 10);
             linearLayout1_1.setLayoutParams(linearLayout1_1Params);
             linearLayout1_1Params.setMargins((int) (6 * dest), (int) (-6 * dest), 0, 0);
             linearLayout1_1.setOrientation(LinearLayout.VERTICAL);

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         try {
             setContentView(new StartButtons(context, activity, sharedPreferences)
-                    .startTiming(((App) getApplication()).getTimings(), myTargetView1, myTargetView2));       // заполнение массива таймингов
+                    .startTiming(((App) getApplication()).getTimings(), myTargetView1, myTargetView2));
         } catch (Exception exception) {
             Toast.makeText(context, exception.toString(),
                     Toast.LENGTH_SHORT).show();
