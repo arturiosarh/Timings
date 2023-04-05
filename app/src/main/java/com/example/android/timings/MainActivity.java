@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
+        } else {
+            context.startService(new Intent(context,MyService.class));
         }
     }
 
@@ -119,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
+        } else {
+            context.startService(new Intent(context,MyService.class));
         }
     }
 
@@ -148,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (count == 50) {
             context.stopService(new Intent(context,MyService.class));
+        } else {
+            context.startService(new Intent(context,MyService.class));
         }
     }
 
@@ -156,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
         context = this;
         sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        MyReceiver receiver = new MyReceiver();
         notifChanels = new NotifChanel[numberOfTimings];
         activity = this;
         new NotifChanel(context).activation();

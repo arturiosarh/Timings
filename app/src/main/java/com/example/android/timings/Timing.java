@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,20 +29,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.text.NumberFormat;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Timer;
 
 public class Timing extends Activity {
@@ -88,7 +82,7 @@ public class Timing extends Activity {
     private TextView textView1_1_2;
     private EditText editText1_1_3;
     private TextView textView1_1_1_01;
-    private Activity activity;
+    private final Activity activity;
 
     public Timing(Context context,
                   String nameOfTiming,
@@ -155,7 +149,7 @@ public class Timing extends Activity {
             linearLayout1 = new LinearLayout(context);
             LinearLayout.LayoutParams linerLayout1Params = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            linerLayout1Params.setMargins(10,10,10,0);
+            linerLayout1Params.setMargins(10,5,10,5);
             linearLayout1.setLayoutParams(linerLayout1Params);
             linearLayout1.setOrientation(LinearLayout.HORIZONTAL);
             linearLayout1.setBackgroundResource(androidx.cardview.R.color.cardview_dark_background);
@@ -249,7 +243,6 @@ public class Timing extends Activity {
                                 editText1_1_3.setSelection(before);
                                 nameOfTiming = editText1_1_3.getText().toString();
                             }
-                            ;
                         }
 
                         @Override
@@ -476,14 +469,8 @@ public class Timing extends Activity {
 
                 LocalDateTime localDateTime;
                 localDateTime = timeOfBegin.plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
-                //LocalDateTime localDateTime1 = timeOfBegin.plusSeconds(30);
-                //Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
                 Duration duration01 = Duration.between(timeOfBegin, localDateTime); //промежуток времени
                 //Duration duration02 = Duration.between(timeOfBegin, localDateTime1); //ожидание намерения
-                /*Calendar notifyTime = new GregorianCalendar();
-                notifyTime.set(Calendar.DAY_OF_MONTH, daysInTimer);
-                notifyTime.set(Calendar.HOUR_OF_DAY, beginHours);
-                notifyTime.set(Calendar.MINUTE, beginMinutes);*/
 
                 int beginDays = days;
                 if (days > 0 && timer.equals(LocalTime.of(0, 0, 0))) {
