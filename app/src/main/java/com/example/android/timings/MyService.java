@@ -1,10 +1,13 @@
 package com.example.android.timings;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
+
 import androidx.annotation.RequiresApi;
 
 public class MyService extends Service {
@@ -19,13 +22,16 @@ public class MyService extends Service {
         super.onCreate();
     }
 
+    @SuppressLint("WakelockTimeout")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (foregroundIsRun == false) {
+        if (!foregroundIsRun) {
             runAsForeground();
         }
-
+        if (intent.getAction() == null) {
+            return START_STICKY;
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 

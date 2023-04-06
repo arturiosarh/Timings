@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -75,6 +76,8 @@ public class NotifChanel extends Activity {
         //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
         String nowTimeTxt = nowTime.format(dtf1);
+        Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Ringtone ringtone = RingtoneManager.getRingtone(context,notificationUri);
 
         Notification notification = new NotificationCompat.Builder(context,"my_channel")
                 .setContentTitle(nameOfTiming)
@@ -90,7 +93,7 @@ public class NotifChanel extends Activity {
                 .setOngoing(false)
                 .setAutoCancel(false)
                 .setDefaults(Notification.DEFAULT_SOUND)
-                .setSound(RingtoneManager.getDefaultUri(TYPE_ALARM))
+                .setSound(notificationUri)
                 .build();
         notification.flags = notification.flags | Notification.FLAG_INSISTENT;
         return notification;

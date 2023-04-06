@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.PowerManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -478,19 +479,27 @@ public class Timing extends Activity {
                 }
                 if (days > 0 || hours > 0 || minutes > 0) {
 
-                    Toast.makeText(context, nameOfTiming + ": установлен", Toast.LENGTH_LONG)
+                    Toast.makeText(context, nameOfTiming + ": установлен", Toast.LENGTH_SHORT)
                             .show();
                     Toast.makeText(context, "на " + days + " дней " + hours + " ч. и " + minutes + " м." +
                                     " в " + nowTimeBeginFull, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context, MyService.class);
+
                     context.startService(intent);  // запускаем фоновый сервис с уведомлением
                     laps = 0;
 
-                    Intent intent01 = new Intent(context, MyReceiver.class);
+                    Intent intent1 =  new Intent(context, MainActivity.class);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    PendingIntent pendingIntent1 = PendingIntent.getActivity(context, NOTIFY_ID + 1, intent1,PendingIntent.FLAG_IMMUTABLE);
+
+                    Intent intent2 = new Intent(context, MyReceiver.class);
+                    intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID + 2, intent2, PendingIntent.FLAG_IMMUTABLE);
 
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID, intent01, PendingIntent.FLAG_IMMUTABLE);
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration01.toMillis() - 1001, pendingIntent);
+                    AlarmManager.AlarmClockInfo alarmClockInfo = new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + duration01.toMillis() - 1001, pendingIntent1);
+
+                    alarmManager.setAlarmClock(alarmClockInfo,pendingIntent);
 
                     textView1_1_1_01.setText(NumberFormat.getNumberInstance().format(laps));
                     myTimer = new Timer();  //добавление таймера
@@ -546,16 +555,25 @@ public class Timing extends Activity {
                                 finalTime = LocalDateTime.now().plusDays(daysInTimer).plusHours(beginHours).plusMinutes(beginMinutes);
                                 timer = LocalTime.of(beginHours, beginMinutes, 0);
                                 laps++;
+                                context.startService(new Intent(context, MyService.class));
                                 LocalDateTime localDateTime2 = LocalDateTime.now();
                                 LocalDateTime localDateTime1 = localDateTime2
                                         .plusDays(daysInTimer)
                                         .plusHours(beginHours)
                                         .plusMinutes(beginMinutes);
                                 Duration duration2 = Duration.between(localDateTime2,localDateTime1);
-                                //Instant instant1 = localDateTime1.toInstant(ZoneOffset.UTC);
+
+                                Intent intent01 =  new Intent(context, MainActivity.class);
+                                intent01.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                PendingIntent pendingIntent01 = PendingIntent.getActivity(context, NOTIFY_ID + 1, intent01,PendingIntent.FLAG_IMMUTABLE);
+
                                 Intent intent02 = new Intent(context, MyReceiver.class);
-                                pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID, intent02, PendingIntent.FLAG_IMMUTABLE);
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + duration2.toMillis(), pendingIntent);
+                                intent02.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID + 2, intent02, PendingIntent.FLAG_IMMUTABLE);
+
+                                AlarmManager.AlarmClockInfo alarmClockInfo1 = new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + duration2.toMillis(), pendingIntent01);
+                                alarmManager.setAlarmClock(alarmClockInfo1,pendingIntent);
+
                                 textView1_1_1_01.setText(NumberFormat.getNumberInstance()
                                         .format(laps));
                                 nm = (NotificationManager) context.
