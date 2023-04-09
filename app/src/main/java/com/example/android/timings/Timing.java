@@ -490,14 +490,14 @@ public class Timing extends Activity {
 
                     Intent intent1 =  new Intent(context, MainActivity.class);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    PendingIntent pendingIntent1 = PendingIntent.getActivity(context, NOTIFY_ID + 1, intent1,PendingIntent.FLAG_IMMUTABLE);
+                    PendingIntent pendingIntent1 = PendingIntent.getActivity(context, NOTIFY_ID + 1, intent1,PendingIntent.FLAG_MUTABLE);
 
-                    Intent intent2 = new Intent(context, MyReceiver.class);
+                    Intent intent2 = new Intent(context, MainActivity.class);
                     intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID + 2, intent2, PendingIntent.FLAG_IMMUTABLE);
+                    pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID + 2, intent2, PendingIntent.FLAG_MUTABLE);
 
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    AlarmManager.AlarmClockInfo alarmClockInfo = new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + duration01.toMillis() - 1001, pendingIntent1);
+                    AlarmManager.AlarmClockInfo alarmClockInfo = new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + duration01.toMillis(), pendingIntent1);
 
                     alarmManager.setAlarmClock(alarmClockInfo,pendingIntent);
 
@@ -565,11 +565,11 @@ public class Timing extends Activity {
 
                                 Intent intent01 =  new Intent(context, MainActivity.class);
                                 intent01.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                PendingIntent pendingIntent01 = PendingIntent.getActivity(context, NOTIFY_ID + 1, intent01,PendingIntent.FLAG_IMMUTABLE);
+                                PendingIntent pendingIntent01 = PendingIntent.getActivity(context, NOTIFY_ID + 1, intent01,PendingIntent.FLAG_MUTABLE);
 
-                                Intent intent02 = new Intent(context, MyReceiver.class);
+                                Intent intent02 = new Intent(context, MainActivity.class);
                                 intent02.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID + 2, intent02, PendingIntent.FLAG_IMMUTABLE);
+                                pendingIntent = PendingIntent.getBroadcast(context, NOTIFY_ID + 2, intent02, PendingIntent.FLAG_MUTABLE);
 
                                 AlarmManager.AlarmClockInfo alarmClockInfo1 = new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + duration2.toMillis(), pendingIntent01);
                                 alarmManager.setAlarmClock(alarmClockInfo1,pendingIntent);

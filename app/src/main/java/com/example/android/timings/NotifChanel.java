@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -38,9 +39,15 @@ public class NotifChanel extends Activity {
         CharSequence name = "Уведомления тайминогов";
         String description = "my_channel";
         int importance = NotificationManager.IMPORTANCE_MAX;
+        Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Ringtone ringtone = RingtoneManager.getRingtone(context,notificationUri);
 
         NotificationChannel mChannel = new NotificationChannel("my_channel", name, importance);
         mChannel.setName(name);
+        mChannel.setSound(notificationUri,new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build());
         mChannel.setDescription(description);
         mChannel.enableLights(true);
         mChannel.setLightColor(Color.RED);
@@ -76,8 +83,6 @@ public class NotifChanel extends Activity {
         //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
         String nowTimeTxt = nowTime.format(dtf1);
-        Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        Ringtone ringtone = RingtoneManager.getRingtone(context,notificationUri);
 
         Notification notification = new NotificationCompat.Builder(context,"my_channel")
                 .setContentTitle(nameOfTiming)
@@ -92,8 +97,7 @@ public class NotifChanel extends Activity {
                 .setChannelId("my_channel")
                 .setOngoing(false)
                 .setAutoCancel(false)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setSound(notificationUri)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
                 .build();
         notification.flags = notification.flags | Notification.FLAG_INSISTENT;
         return notification;

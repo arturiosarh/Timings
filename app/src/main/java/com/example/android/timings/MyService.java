@@ -22,7 +22,6 @@ public class MyService extends Service {
         super.onCreate();
     }
 
-    @SuppressLint("WakelockTimeout")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
